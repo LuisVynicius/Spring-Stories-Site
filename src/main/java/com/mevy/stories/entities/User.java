@@ -1,5 +1,7 @@
 package com.mevy.stories.entities;
 
+import java.time.LocalDateTime;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -40,4 +42,8 @@ public class User {
     )
     private String password;
 
+    @Column(
+        nullable = false
+    )
+    private LocalDateTime createAt;
 }
