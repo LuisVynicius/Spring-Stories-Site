@@ -24,7 +24,7 @@ public class BookController {
     public ResponseEntity<Void> create() {
         Book book = bookService.create(
             Book.builder()
-                        .name("Book01")
+                        .title("Book01")
                         .build()
         );
 

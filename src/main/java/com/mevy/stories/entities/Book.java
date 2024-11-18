@@ -26,6 +26,16 @@ public class Book {
         length = 30,
         nullable = false
     )
-    private String name;
+    private String title;
+
+    // Create By
+
+    // Categories
+
+    private String description;
+
+    // Chapters
+
+
 
 }
