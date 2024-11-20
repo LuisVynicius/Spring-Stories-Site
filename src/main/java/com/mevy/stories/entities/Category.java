@@ -11,11 +11,15 @@ import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import lombok.Builder;
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "tb_category")
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode(of = "name")
 @Builder
 public class Category {
     

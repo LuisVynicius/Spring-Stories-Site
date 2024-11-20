@@ -1,6 +1,7 @@
 package com.mevy.stories.entities;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -29,6 +30,7 @@ public class Chapter {
     private String title;
 
     @Column()
+    @ElementCollection
     private String[] lines;
 
     @ManyToOne
