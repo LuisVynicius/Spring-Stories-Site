@@ -1,12 +1,16 @@
 package com.mevy.stories.entities;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.Builder;
 import lombok.Data;
@@ -46,4 +50,10 @@ public class User {
         nullable = false
     )
     private LocalDateTime createAt;
+
+    @OneToMany(mappedBy = "user")
+    private Set<Book> books = new HashSet<>();
+
+    @OneToOne
+    private UserInformation userInformation;
 }
