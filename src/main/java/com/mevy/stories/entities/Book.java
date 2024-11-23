@@ -11,7 +11,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.Builder;
 import lombok.Data;
@@ -35,6 +34,9 @@ public class Book {
     )
     private String title;
     
+    @Column(
+        length = 255
+    )
     private String description;
 
     @ManyToOne
