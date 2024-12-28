@@ -24,7 +24,9 @@ public class Book {
     )
     private String name;
 
-    @Column()
+    @Column(
+        nullable = false
+    )
     private String description;
 
     @Column(
