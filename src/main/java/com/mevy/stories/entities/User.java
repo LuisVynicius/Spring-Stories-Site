@@ -12,21 +12,29 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @Entity
-@Table(name="tb_category")
+@Table(name="tb_user")
 @AllArgsConstructor
 @Builder
 @Data
 @EqualsAndHashCode(of="id")
-public class Category {
+public class User {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(
-        nullable = false,
         length = 50,
+        nullable = false
+    )
+    private String username;
+    
+    @Column(
+        length = 50,
+        nullable = false,
+        updatable = false,
         unique = true
     )
-    private String name;
+    private String email;
+
 }
