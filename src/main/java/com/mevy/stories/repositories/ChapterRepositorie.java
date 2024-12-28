@@ -4,6 +4,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.mevy.stories.entities.Chapter;
 
-public interface ChapterRepositories extends JpaRepository<Chapter, Long> {
+public interface ChapterRepositorie extends JpaRepository<Chapter, Long> {
     
 }
