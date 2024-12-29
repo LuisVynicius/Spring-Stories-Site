@@ -73,8 +73,7 @@ public class Book {
     @OneToMany(mappedBy = "book")
     private Set<Chapter> chapters = new HashSet<>();
 
-    // Adicioanr Relações com
-
-    // Usuário, Categoria
+    @ManyToMany(mappedBy = "favorites")
+    private Set<User> users = new HashSet<>();
 
 }
