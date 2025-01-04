@@ -42,6 +42,11 @@ public class User {
     )
     private String email;
 
+    @Column(
+        nullable = false
+    )
+    private String password;
+
     @OneToMany(mappedBy = "author")
     private Set<Book> books = new HashSet<>();
 

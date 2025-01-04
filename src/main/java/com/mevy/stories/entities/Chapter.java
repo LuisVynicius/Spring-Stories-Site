@@ -34,7 +34,9 @@ public class Chapter {
     @Column()
     private String text;
     
-    @Column()
+    @Column(
+        nullable = false
+    )
     @JsonFormat(
         pattern = "dd/MM/yyyy'T'HH:mm:ss'Z'",
         timezone = "UTC",
@@ -44,7 +46,5 @@ public class Chapter {
 
     @ManyToOne
     private Book book;
-
-    // Adicionar relações com: book
 
 }
