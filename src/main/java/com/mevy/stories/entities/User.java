@@ -3,6 +3,8 @@ package com.mevy.stories.entities;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -50,9 +52,11 @@ public class User {
     private String password;
 
     @OneToMany(mappedBy = "author")
+    @JsonIgnore
     private Set<Book> books = new HashSet<>();
 
     @ManyToMany()
+    @JsonIgnore
     private Set<Book> favorites = new HashSet<>();
 
 }
