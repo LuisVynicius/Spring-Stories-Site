@@ -99,6 +99,7 @@ public class Seed implements CommandLineRunner {
         );
 
         Chapter chapter01Book01 = Chapter.builder()
+                                            .name("Passo 01")
                                             .text("Text01")
                                             .book(book01)
                                             .creationDate(Instant.now())

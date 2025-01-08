@@ -30,7 +30,15 @@ public class Chapter {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column()
+    @Column(
+        nullable = false,
+        length = 50
+    )
+    private String name;
+    
+    @Column(
+        nullable = false
+    )
     private String text;
     
     @Column(

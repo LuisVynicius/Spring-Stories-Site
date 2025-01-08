@@ -10,6 +10,7 @@ import com.mevy.stories.dtos.GetCardBookDTO;
 import com.mevy.stories.dtos.GetViewBookDTO;
 import com.mevy.stories.entities.Book;
 import com.mevy.stories.entities.Category;
+import com.mevy.stories.entities.Chapter;
 import com.mevy.stories.repositories.BookRepository;
 
 import lombok.AllArgsConstructor;
@@ -65,7 +66,7 @@ public class BookService {
             book.getUpdatedDate().toString(),
             getCategories(book),
             book.getDescription(),
-            new String[] {""}
+            getChapters(book)
         );
 
         return getViewBookDTO;
@@ -90,6 +91,19 @@ public class BookService {
         }
 
         return categories;
+    }
+
+    private String[] getChapters(Book book) {
+        int size = book.getChapters().size();
+        String[] chapters = new String[size];
+
+        int i = 0;
+        for (Chapter chapter : book.getChapters()) {
+            chapters[i] = chapter.getName();
+            i++;
+        }
+
+        return chapters;
     }
 
 }
