@@ -19,13 +19,11 @@ import com.mevy.stories.repositories.CategoryRepository;
 import com.mevy.stories.repositories.ChapterRepositorie;
 import com.mevy.stories.repositories.UserRepository;
 
-import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 
 @Configuration
 @Profile("dev")
 @AllArgsConstructor
-@Transactional
 public class Seed implements CommandLineRunner {
 
     private BookRepository bookRepository;
@@ -71,10 +69,10 @@ public class Seed implements CommandLineRunner {
         );
 
         Book book01 = Book.builder()
-                            .name("Book01")
+                            .name("Minecraft Book")
                             .creationDate(Instant.now())
-                            .updateDate(Instant.now())
-                            .description("Description01")
+                            .updatedDate(Instant.now())
+                            .description("Its a Minecraft book")
                             .author(user01)
                             .categories(
                                 Set.of(category01)
@@ -82,10 +80,10 @@ public class Seed implements CommandLineRunner {
                             .build();
         
         Book book02 = Book.builder()
-                            .name("Book02")
+                            .name("PVZ Book")
                             .creationDate(Instant.now())
-                            .updateDate(Instant.now())
-                            .description("Description02")
+                            .updatedDate(Instant.now())
+                            .description("Its a PVZ book")
                             .author(user02)
                             .categories(
                                 Set.of(category02)

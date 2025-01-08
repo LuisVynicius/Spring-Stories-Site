@@ -65,7 +65,7 @@ public class Book {
         timezone = "UTC",
         shape = JsonFormat.Shape.STRING
     )
-    private Instant updateDate;
+    private Instant updatedDate;
 
     @ManyToOne
     private User author;
