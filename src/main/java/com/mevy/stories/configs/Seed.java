@@ -19,11 +19,13 @@ import com.mevy.stories.repositories.CategoryRepository;
 import com.mevy.stories.repositories.ChapterRepositorie;
 import com.mevy.stories.repositories.UserRepository;
 
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 
 @Configuration
 @Profile("dev")
 @AllArgsConstructor
+@Transactional
 public class Seed implements CommandLineRunner {
 
     private BookRepository bookRepository;
@@ -105,6 +107,11 @@ public class Seed implements CommandLineRunner {
                         
         chapterRepositorie.save(chapter01Book01);
 
+        user01.setFavorites(new HashSet<>());
+
+        user01.getFavorites().add(book01);
+
+        userRepository.save(user01);
     }
     
 }
