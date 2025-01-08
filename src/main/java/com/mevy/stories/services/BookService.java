@@ -2,9 +2,12 @@ package com.mevy.stories.services;
 
 import java.util.List;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.mevy.stories.dtos.GetCardBookDTO;
+import com.mevy.stories.dtos.GetViewBookDTO;
 import com.mevy.stories.entities.Book;
 import com.mevy.stories.entities.Category;
 import com.mevy.stories.repositories.BookRepository;
@@ -17,17 +20,28 @@ public class BookService {
     
     private BookRepository bookRepository;
 
-    public List<Book> recentBooks() {
-        List<Book> books = bookRepository.findAll();
-        return books;
+    @Transactional(readOnly = true)
+    public List<GetCardBookDTO> recentBooks() {
+        List<Book> books = bookRepository.findAllByOrderByCreationDateDesc(Pageable.ofSize(40));
+        List<GetCardBookDTO> cardBooks = toCardDTO(books);
+        return cardBooks;
     }
 
-    public GetCardBookDTO toDTO(Book book) {
+    @Transactional(readOnly = true)
+    public GetViewBookDTO getBook(String name) {
+        Book book = bookRepository.findByName(name).get();
+        
+        GetViewBookDTO getViewBookDTO = toViewDTO(book);
+
+        return getViewBookDTO;
+    }
+
+    public GetCardBookDTO toCardDTO(Book book) {
         GetCardBookDTO getCardBookDTO = new GetCardBookDTO(
             book.getName(),
             book.getAuthor().getUsername(),
             book.getChapters().size(),
-            book.getUpdatedDate().toString().substring(0, 10),
+            book.getUpdatedDate().toString(),
             getCategories(book),
             book.getDescription()
         );
@@ -35,12 +49,34 @@ public class BookService {
         return getCardBookDTO;
     }
 
-    public List<GetCardBookDTO> toDTO(List<Book> book) {
-        List<GetCardBookDTO> getCardBookDTOs = book.stream()
-                                                    .map(x -> toDTO(x))
+    public List<GetCardBookDTO> toCardDTO(List<Book> books) {
+        List<GetCardBookDTO> getCardBookDTOs = books.stream()
+                                                    .map(x -> toCardDTO(x))
                                                     .toList();
 
         return getCardBookDTOs;
+    }
+
+    public GetViewBookDTO toViewDTO(Book book) {
+        GetViewBookDTO getViewBookDTO = new GetViewBookDTO(
+            book.getName(),
+            book.getAuthor().getUsername(),
+            book.getCreationDate().toString(),
+            book.getUpdatedDate().toString(),
+            getCategories(book),
+            book.getDescription(),
+            new String[] {""}
+        );
+
+        return getViewBookDTO;
+    }
+
+    public List<GetViewBookDTO> toViewDTO(List<Book> books) {
+        List<GetViewBookDTO> getViewBookDTOs = books.stream()
+                                                    .map(x -> toViewDTO(x))
+                                                    .toList();
+        
+        return getViewBookDTOs;
     }
 
     private String[] getCategories(Book book) {

@@ -4,10 +4,12 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.mevy.stories.dtos.GetCardBookDTO;
+import com.mevy.stories.dtos.GetViewBookDTO;
 import com.mevy.stories.entities.Book;
 import com.mevy.stories.services.BookService;
 
@@ -22,9 +24,16 @@ public class BookController {
 
     @GetMapping("/recents")
     public ResponseEntity<List<GetCardBookDTO>> recentBooks() {
-        List<Book> books = bookService.recentBooks();
-        List<GetCardBookDTO> cardBooks = bookService.toDTO(books);
-        return ResponseEntity.ok().body(cardBooks);
+        List<GetCardBookDTO> cardBooksDTO = bookService.recentBooks();
+        return ResponseEntity.ok().body(cardBooksDTO);
+    }
+
+    @GetMapping("/name/{name}")
+    public ResponseEntity<GetViewBookDTO> getBook(
+        @PathVariable String name
+    ) {
+        GetViewBookDTO viewBookDTO = bookService.getBook(name);
+        return ResponseEntity.ok().body(viewBookDTO);
     }
 
 }
