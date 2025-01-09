@@ -10,6 +10,6 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class ChapterService {
     
-    private ChapterRepositorie ChapterRepositorie;
+    private ChapterRepositorie chapterRepositorie;
 
 }

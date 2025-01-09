@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 
 import com.mevy.stories.services.exceptions.ResourceNotFoundException;
+import com.mevy.stories.services.exceptions.ResourceSaveException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -17,8 +18,9 @@ public class GlobalExceptionHandler {
         Exception exception,
         WebRequest webRequest
     ) {
-        ErrorResponse errorResponse = buildErrorResponse(exception);
-        return ResponseEntity.status(500).body(errorResponse);
+        final int status = 500;
+        ErrorResponse errorResponse = buildErrorResponse(exception, status);
+        return ResponseEntity.status(status).body(errorResponse);
     }
 
     @ExceptionHandler(ResourceNotFoundException.class)
@@ -26,15 +28,36 @@ public class GlobalExceptionHandler {
         ResourceNotFoundException exception,
         WebRequest webRequest
     ) {
-        ErrorResponse errorResponse = buildErrorResponse(exception);
-        return ResponseEntity.status(404).body(errorResponse);
+        final int status = 404;
+        ErrorResponse errorResponse = buildErrorResponse(exception, status, exception.getMessage());
+        return ResponseEntity.status(status).body(errorResponse);
     }
 
-    private ErrorResponse buildErrorResponse(Exception exception) {
+    @ExceptionHandler(ResourceSaveException.class)
+    public ResponseEntity<ErrorResponse> resourcesaveErrorHandler(
+        ResourceSaveException exception,
+        WebRequest webRequest
+    ) {
+        final int status = 409;
+        ErrorResponse errorResponse = buildErrorResponse(exception, status, exception.getMessage());
+        return ResponseEntity.status(status).body(errorResponse);
+    }
+
+    private ErrorResponse buildErrorResponse(Exception exception, int status) {
         ErrorResponse errorResponse = ErrorResponse.builder()
-                                                    .message(exception.getMessage())
+                                                    .message("Um erro não tratado foi disparado.")
                                                     .timestamp(Instant.now())
-                                                    .status(404)
+                                                    .status(status)
+                                                    .build();
+
+        return errorResponse;
+    }
+
+    private ErrorResponse buildErrorResponse(Exception exception, int status, String message) {
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                                                    .message(message)
+                                                    .timestamp(Instant.now())
+                                                    .status(status)
                                                     .build();
 
         return errorResponse;

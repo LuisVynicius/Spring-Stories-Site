@@ -6,4 +6,6 @@ import com.mevy.stories.entities.User;
 
 public interface UserRepository extends JpaRepository<User, Long> {
     
+    boolean existsByEmail(String email);
+
 }

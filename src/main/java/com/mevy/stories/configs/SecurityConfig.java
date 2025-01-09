@@ -14,8 +14,8 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
     
     private static final String[] PUBLIC_MATCHERS_POST = {
-        "/login",
-        "/register"
+        "/user/login",
+        "/user/register"
     };
 
     private static final String[] PUBLIC_MATCHERS_GET = {
