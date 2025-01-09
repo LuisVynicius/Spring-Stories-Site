@@ -12,6 +12,7 @@ import com.mevy.stories.entities.Book;
 import com.mevy.stories.entities.Category;
 import com.mevy.stories.entities.Chapter;
 import com.mevy.stories.repositories.BookRepository;
+import com.mevy.stories.services.exceptions.ResourceNotFoundException;
 
 import lombok.AllArgsConstructor;
 
@@ -30,7 +31,9 @@ public class BookService {
 
     @Transactional(readOnly = true)
     public GetViewBookDTO getBook(String name) {
-        Book book = bookRepository.findByName(name).get();
+        Book book = bookRepository.findByName(name).orElseThrow(
+            () -> new ResourceNotFoundException(Book.class)
+        );
         
         GetViewBookDTO getViewBookDTO = toViewDTO(book);
 

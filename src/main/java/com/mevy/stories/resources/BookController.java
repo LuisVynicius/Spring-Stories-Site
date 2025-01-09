@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.mevy.stories.dtos.GetCardBookDTO;
 import com.mevy.stories.dtos.GetViewBookDTO;
-import com.mevy.stories.entities.Book;
 import com.mevy.stories.services.BookService;
 
 import lombok.AllArgsConstructor;
