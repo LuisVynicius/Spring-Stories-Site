@@ -1,8 +1,5 @@
 package com.mevy.stories.configs;
 
-import java.util.Arrays;
-import java.util.List;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -31,6 +28,9 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                     .csrf(csrf -> csrf.disable())
+                    .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                    )
                     .cors(cors -> cors.configurationSource(request -> {
                         CorsConfiguration corsConfiguration = new CorsConfiguration();
                         corsConfiguration.addAllowedHeader("*");
@@ -38,9 +38,6 @@ public class SecurityConfig {
                         corsConfiguration.addAllowedOrigin("*");
                         return corsConfiguration;
                     }))
-                    .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                    )
                     .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.POST, PUBLIC_MATCHERS_POST).permitAll()
                         .requestMatchers(HttpMethod.GET, PUBLIC_MATCHERS_GET).permitAll()
