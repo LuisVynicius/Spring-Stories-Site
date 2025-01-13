@@ -8,7 +8,16 @@ import lombok.Getter;
 public enum ProfileEnum {
     ADMIN(1, "ADMIN");
 
-    int code;
+    Integer code;
     String description;
+
+    public static ProfileEnum valueOf(Integer code) {
+        for (ProfileEnum profile : ProfileEnum.values()) {
+            if (code.equals(profile.code)) {
+                return profile;
+            }
+        }
+        throw new IllegalArgumentException("Valor de ProfileEnum inválido: " + code);
+    }
 
 }

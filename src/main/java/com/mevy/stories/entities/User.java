@@ -2,10 +2,14 @@ package com.mevy.stories.entities;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.mevy.stories.entities.enums.ProfileEnum;
 
+import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -51,6 +55,10 @@ public class User {
     )
     private String password;
 
+    @ElementCollection()
+    @CollectionTable(name = "tb_user_authorities")
+    private Set<Integer> authorities = new HashSet<>();
+
     @OneToMany(mappedBy = "author")
     @JsonIgnore
     private Set<Book> books = new HashSet<>();
@@ -58,5 +66,15 @@ public class User {
     @ManyToMany()
     @JsonIgnore
     private Set<Book> favorites = new HashSet<>();
+
+    public Set<ProfileEnum> getAuthorities() {
+        return this.authorities.stream().map(
+            x -> ProfileEnum.valueOf(x)
+        ).collect(Collectors.toSet());
+    }
+
+    public void addAuthoritie(ProfileEnum profile) {
+        this.authorities.add(profile.getCode());
+    }
 
 }
