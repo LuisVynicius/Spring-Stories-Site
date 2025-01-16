@@ -11,28 +11,29 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 
+import com.mevy.stories.security.JwtAuthenticationFilter;
 import com.mevy.stories.security.JwtUtil;
-
-import lombok.AllArgsConstructor;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
     
     private static final String[] PUBLIC_MATCHERS_POST = {
-        "/user/login",
+        "/login",
         "/user/register"
     };
 
     private static final String[] PUBLIC_MATCHERS_GET = {
         "/book/recents",
-        "/book/name/**"
+        "/book/name/**",
+        "/user"
     };
 
-    private AuthenticationManager authenticationManager; 
+    private AuthenticationManager authenticationManager;
 
     @Autowired
     private UserDetailsService userDetailsService;
@@ -42,11 +43,9 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-
         AuthenticationManagerBuilder authenticationManagerBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
-        authenticationManagerBuilder.userDetailsService(this.userDetailsService)
-                                    .passwordEncoder(bCryptPasswordEncoder());
-
+        authenticationManagerBuilder.userDetailsService(userDetailsService)
+                                    .passwordEncoder(passwordEncoder());
         this.authenticationManager = authenticationManagerBuilder.build();
 
         return http
@@ -61,6 +60,8 @@ public class SecurityConfig {
                         corsConfiguration.addAllowedOrigin("*");
                         return corsConfiguration;
                     }))
+                    .authenticationManager(authenticationManager)
+                    .addFilter(new JwtAuthenticationFilter(authenticationManager, jwtUtil))
                     .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.POST, PUBLIC_MATCHERS_POST).permitAll()
                         .requestMatchers(HttpMethod.GET, PUBLIC_MATCHERS_GET).permitAll()
@@ -70,7 +71,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    BCryptPasswordEncoder bCryptPasswordEncoder() {
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 

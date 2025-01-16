@@ -10,6 +10,8 @@ import java.util.Set;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.mevy.stories.entities.Book;
 import com.mevy.stories.entities.Category;
@@ -31,6 +33,7 @@ public class Seed implements CommandLineRunner {
     private CategoryRepository categoryRepository;
     private ChapterRepositorie chapterRepositorie;
     private UserRepository userRepository;
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public void run(String... args) throws Exception {
@@ -38,13 +41,13 @@ public class Seed implements CommandLineRunner {
         User user01 = User.builder()
                         .username("User01")
                         .email("User01@gmail.com")
-                        .password("password01")
+                        .password(passwordEncoder.encode("password01"))
                         .build();
 
         User user02 = User.builder()
                         .username("User02")
                         .email("User02@gmail.com")
-                        .password("password02")
+                        .password(passwordEncoder.encode("password02"))
                         .build();
 
         userRepository.saveAll(

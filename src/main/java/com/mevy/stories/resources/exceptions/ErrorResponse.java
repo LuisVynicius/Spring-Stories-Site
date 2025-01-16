@@ -17,4 +17,13 @@ public class ErrorResponse {
     private String message;
     private Instant timestamp;
 
+    public String toJson() {
+        return String.format(
+            "{\"status\": %s, \"message\": %s, \"timestamp\": %s}",
+            status,
+            message,
+            timestamp.toString()
+        );
+    }
+
 }

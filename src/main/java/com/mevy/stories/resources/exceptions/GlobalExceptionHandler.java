@@ -1,8 +1,11 @@
 package com.mevy.stories.resources.exceptions;
 
+import java.io.IOException;
 import java.time.Instant;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
@@ -10,8 +13,12 @@ import org.springframework.web.context.request.WebRequest;
 import com.mevy.stories.services.exceptions.ResourceNotFoundException;
 import com.mevy.stories.services.exceptions.ResourceSaveException;
 
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
 @RestControllerAdvice
-public class GlobalExceptionHandler {
+public class GlobalExceptionHandler implements AuthenticationFailureHandler {
     
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleAllExceptions(
@@ -43,9 +50,22 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(status).body(errorResponse);
     }
 
+    @Override
+    public void onAuthenticationFailure(
+        HttpServletRequest request,
+        HttpServletResponse response,
+        AuthenticationException exception
+    ) throws IOException, ServletException {
+        final int status = 401;
+        response.setStatus(status);
+        response.setContentType("application/json");
+        ErrorResponse errorResponse = buildErrorResponse(exception, status, exception.getMessage());
+        response.getWriter().append(errorResponse.toJson());
+    }
+
     private ErrorResponse buildErrorResponse(Exception exception, int status) {
         ErrorResponse errorResponse = ErrorResponse.builder()
-                                                    .message("Um erro não tratado foi disparado.")
+                                                    .message(exception.getMessage())
                                                     .timestamp(Instant.now())
                                                     .status(status)
                                                     .build();
