@@ -45,6 +45,19 @@ public class JwtUtil {
         return false;
     }
 
+    public String getUsername(String token) {
+        Claims claims = getClaims(token);
+        if (Objects.nonNull(claims)) {
+            return claims.getSubject();
+        }
+        return null;
+    }
+    
+    private SecretKey getSecretKeyBySecret() {
+        SecretKey secretKey = Keys.hmacShaKeyFor(this.secret.getBytes());
+        return secretKey;
+    }
+
     private Claims getClaims(String token) {
         SecretKey secretKey = getSecretKeyBySecret();
 
@@ -57,11 +70,6 @@ public class JwtUtil {
         } catch (Exception e) {
             return null;
         }
-    }
-
-    private SecretKey getSecretKeyBySecret() {
-        SecretKey secretKey = Keys.hmacShaKeyFor(this.secret.getBytes());
-        return secretKey;
-    }
+    }    
 
 }

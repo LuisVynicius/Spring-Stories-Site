@@ -16,6 +16,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 
 import com.mevy.stories.security.JwtAuthenticationFilter;
+import com.mevy.stories.security.JwtAuthorizationFilter;
 import com.mevy.stories.security.JwtUtil;
 
 @Configuration
@@ -62,6 +63,7 @@ public class SecurityConfig {
                     }))
                     .authenticationManager(authenticationManager)
                     .addFilter(new JwtAuthenticationFilter(authenticationManager, jwtUtil))
+                    .addFilter(new JwtAuthorizationFilter(authenticationManager, jwtUtil, userDetailsService))
                     .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.POST, PUBLIC_MATCHERS_POST).permitAll()
                         .requestMatchers(HttpMethod.GET, PUBLIC_MATCHERS_GET).permitAll()

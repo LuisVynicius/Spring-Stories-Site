@@ -36,6 +36,7 @@ public class UserController {
     public ResponseEntity<Void> register(
         @RequestBody @Valid PostUserRegisterDTO postUserRegisterDTO
     ) {
+        System.out.println("aqui");
         userService.register(postUserRegisterDTO);
         return ResponseEntity.noContent().build();
     }
