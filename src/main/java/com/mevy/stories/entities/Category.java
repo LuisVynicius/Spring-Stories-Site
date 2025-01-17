@@ -33,7 +33,7 @@ public class Category {
 
     @Column(
         nullable = false,
-        length = 50,
+        length = 25,
         unique = true
     )
     private String name;

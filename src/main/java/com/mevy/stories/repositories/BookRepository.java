@@ -15,4 +15,7 @@ public interface BookRepository extends JpaRepository<Book, Long>{
     @Transactional(readOnly = true)
     Optional<Book> findByName(String name);
 
+    @Transactional(readOnly = true)
+    boolean existsByName(String name);
+
 }
