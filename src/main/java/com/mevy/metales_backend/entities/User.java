@@ -46,7 +46,8 @@ public class User {
     private Long id;
 
     @Column(
-        nullable = false
+        nullable = false,
+        length = 30
     )
     private String username;
     

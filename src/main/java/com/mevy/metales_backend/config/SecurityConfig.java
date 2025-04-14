@@ -20,7 +20,8 @@ import com.mevy.metales_backend.security.JWTUtil;
 public class SecurityConfig {
     
     private final String[] PUBLIC_MATCHES_POST = new String[] {
-        "/login"
+        "/login",
+        "/user/register"
     };
 
     private AuthenticationManager authenticationManager;
