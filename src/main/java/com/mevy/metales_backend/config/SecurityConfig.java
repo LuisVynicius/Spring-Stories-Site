@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
 
 import com.mevy.metales_backend.security.JWTAuthenticationFilter;
 import com.mevy.metales_backend.security.JWTUtil;
@@ -41,6 +42,15 @@ public class SecurityConfig {
 
         return http
                     .csrf(csrf -> csrf.disable())
+                    .cors(cors -> cors
+                        .configurationSource(config -> {
+                            CorsConfiguration corsConfiguration = new CorsConfiguration();
+                            corsConfiguration.addAllowedOrigin("*");
+                            corsConfiguration.addAllowedMethod("*");
+                            corsConfiguration.addAllowedHeader("*");
+                            return corsConfiguration;
+                        })
+                    )
                     .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                     )
