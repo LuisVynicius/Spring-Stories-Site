@@ -12,8 +12,8 @@ public enum ProfileEnum {
     USER(2, "ROLE_USER")
     ;
 
-    private Integer code;
-    private String description;
+    private final Integer code;
+    private final String description;
 
     public static ProfileEnum toEnum(Integer code) {
         if (Objects.isNull(code)) {

@@ -3,9 +3,9 @@ package com.mevy.metales_backend.repositories;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.mevy.metales_backend.entities.Book;
+import com.mevy.metales_backend.entities.Tale;
 
 @Repository
-public interface BookRepository extends JpaRepository<Book, Long> {
+public interface TaleRepository extends JpaRepository<Tale, Long> {
     
 }

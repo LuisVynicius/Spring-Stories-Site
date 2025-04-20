@@ -15,6 +15,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Index;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -67,6 +69,15 @@ public class User {
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "user_profile")
     private Set<Integer> profiles = new HashSet<>();
+
+    @OneToMany(mappedBy = "author")
+    private Set<Tale> tales = new HashSet<>();
+
+    @ManyToMany
+    private Set<Tale> likes = new HashSet<>();
+    
+    @ManyToMany
+    private Set<Tale> favorites = new HashSet<>();
 
     public Set<ProfileEnum> getProfiles() {
         return profiles.stream().map(x -> ProfileEnum.toEnum(x)).collect(Collectors.toSet());
