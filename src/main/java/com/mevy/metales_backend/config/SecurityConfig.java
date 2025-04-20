@@ -22,7 +22,8 @@ public class SecurityConfig {
     
     private final String[] PUBLIC_MATCHES_POST = new String[] {
         "/login",
-        "/user/register"
+        "/user/register",
+        "/token/validate"
     };
 
     private AuthenticationManager authenticationManager;

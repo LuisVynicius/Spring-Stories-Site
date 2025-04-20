@@ -21,9 +21,9 @@ public class Seed implements CommandLineRunner {
     public void run(String... args) throws Exception {
         
         User user = User.builder()
-                        .username("Username")
-                        .email("Email")
-                        .password(passwordEncoder.encode("Password"))
+                        .username("username")
+                        .email("email@gmail.com")
+                        .password(passwordEncoder.encode("password"))
                         .build();
         
         userRepository.save(user);
