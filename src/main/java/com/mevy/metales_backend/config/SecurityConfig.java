@@ -57,6 +57,8 @@ public class SecurityConfig {
                     )
                     .authorizeHttpRequests(request -> request
                         .requestMatchers(HttpMethod.POST, PUBLIC_MATCHES_POST).permitAll()
+                        .requestMatchers(HttpMethod.GET, "/tales/all").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/tales/**").permitAll()
                         .anyRequest().authenticated()
                     )
                     .authenticationManager(authenticationManager)

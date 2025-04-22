@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.mevy.metales_backend.entities.enums.ProfileEnum;
 
 import jakarta.persistence.CollectionTable;
@@ -35,7 +36,7 @@ import lombok.Setter;
 @Builder
 @Getter
 @Setter
-@EqualsAndHashCode(of = "id")
+@EqualsAndHashCode(of = "email")
 public class User {
 
     @Id
@@ -71,6 +72,7 @@ public class User {
     private Set<Integer> profiles = new HashSet<>();
 
     @OneToMany(mappedBy = "author")
+    @JsonIgnore
     private Set<Tale> tales = new HashSet<>();
 
     @ManyToMany

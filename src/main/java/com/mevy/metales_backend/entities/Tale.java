@@ -9,12 +9,14 @@ import com.mevy.metales_backend.entities.enums.TaleStatus;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Index;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -64,7 +66,7 @@ public class Tale {
         timezone = "UTC",
         shape = JsonFormat.Shape.STRING
     )
-    private Instant deletationDate;
+    private Instant UpdationDate;
 
     @Column(
         length = 500
@@ -87,6 +89,9 @@ public class Tale {
 
     @ManyToMany(mappedBy = "favorites")
     private Set<User> usersFavorites = new HashSet<>();
+
+    @OneToMany(mappedBy = "tale")
+    private Set<Chapter> chapters = new HashSet<>();
 
     public void setStatus(TaleStatus status) {
         this.status = status.getCode();

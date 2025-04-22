@@ -12,9 +12,8 @@ import com.mevy.metales_backend.entities.User;
 public interface UserRepository extends JpaRepository<User, Long> {
     
     @Transactional(readOnly = true)
-    public Optional<User> findByUsername(String username);
+    Optional<User> findByUsername(String username);
 
     @Transactional(readOnly = true)
-    public Optional<User> findByEmail(String email);
-
+    Optional<User> findByEmail(String email);
 }
