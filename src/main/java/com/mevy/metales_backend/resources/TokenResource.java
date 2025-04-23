@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.mevy.metales_backend.entities.dtos.TokenValidDTO;
+import com.mevy.metales_backend.entities.dtos.TokenDTO;
 import com.mevy.metales_backend.security.JWTUtil;
 
 import jakarta.validation.Valid;
@@ -20,7 +20,7 @@ public class TokenResource {
     private final JWTUtil jwtUtil;
 
     @PostMapping("/validate")
-    public ResponseEntity<Boolean> validToken(@RequestBody @Valid TokenValidDTO tokenValidDTO) {
+    public ResponseEntity<Boolean> validToken(@RequestBody @Valid TokenDTO tokenValidDTO) {
         Boolean isValid = jwtUtil.isValidToken(tokenValidDTO.token().substring(7));
         
         if (isValid) {

@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.mevy.metales_backend.entities.Chapter;
 import com.mevy.metales_backend.entities.Tale;
+import com.mevy.metales_backend.entities.User;
 import com.mevy.metales_backend.entities.dtos.ChapterViewDTO;
 import com.mevy.metales_backend.entities.dtos.TaleDTO;
 import com.mevy.metales_backend.entities.dtos.TaleReadDTO;
@@ -24,24 +25,11 @@ public class TaleService {
     
     private final TaleRepository taleRepository;
     private final UserRepository userRepository;
+    private final UserService userService;
 
     @Transactional(readOnly = true)
     public List<TaleDTO> findTales() {
         List<Tale> tales = taleRepository.findAll();
-
-        tales.forEach(tale -> {
-            if (tale.getDescription().length() > 300) {
-                tale.setDescription(
-                    tale.getDescription().substring(0, 297) + "..."
-                );
-            }
-
-            if (tale.getName().length() > 26) {
-                tale.setName(
-                    tale.getName().substring(0, 23) + "..."
-                );
-            }
-        });
 
         List<TaleDTO> talesResult = tales.stream().map(x -> taleToTaleDTO(x)).toList();
 
@@ -68,6 +56,26 @@ public class TaleService {
         return taleReadDTO;
     }
 
+    @Transactional(readOnly = true)
+    public List<TaleDTO> findMyTales(String token) {
+        User user = userService.findUserByToken(token);
+
+        return user.getTales()
+                    .stream()
+                    .map(tale -> taleToTaleDTO(tale))
+                    .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<TaleDTO> findMyFavorites(String token) {
+        User user = userService.findUserByToken(token);
+
+        return user.getFavorites()
+                    .stream()
+                    .map(tale -> taleToTaleDTO(tale))
+                    .toList();
+    }
+
     private TaleDTO taleToTaleDTO(Tale tale) {
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
                                                                 .withZone(
@@ -76,7 +84,7 @@ public class TaleService {
         );
 
         return new TaleDTO(
-            tale.getName(),
+            tale.getName().length() > 26 ? tale.getName().substring(0, 23) + "..." : tale.getName(),
             tale.getAuthor().getUsername(),
             tale.getChapters().size(),
             dateTimeFormatter.format(tale.getUpdationDate()),
@@ -84,7 +92,7 @@ public class TaleService {
             tale.getCategories().stream().map(
                 category -> category.getName()
             ).toArray(String[]::new),
-            tale.getDescription()
+            tale.getDescription().length() > 300 ? tale.getDescription().substring(0, 297) + "..." : tale.getDescription()
         );
     }
 

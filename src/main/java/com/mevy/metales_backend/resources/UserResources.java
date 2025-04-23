@@ -3,14 +3,17 @@ package com.mevy.metales_backend.resources;
 import java.net.URI;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.mevy.metales_backend.entities.User;
 import com.mevy.metales_backend.entities.dtos.UserRegisterDTO;
+import com.mevy.metales_backend.entities.dtos.UsernameDTO;
 import com.mevy.metales_backend.services.UserService;
 
 import jakarta.validation.Valid;
@@ -37,6 +40,13 @@ public class UserResources {
                                             .toUri();
         
         return ResponseEntity.created(uri).build();
+    }
+
+    @GetMapping("/username")
+    public ResponseEntity<UsernameDTO> nameByToken(@RequestHeader("Authorization") String token) {
+        UsernameDTO usernameDTO = userService.usernameByToken(token);
+        
+        return ResponseEntity.ok().body(usernameDTO);
     }
 
 }

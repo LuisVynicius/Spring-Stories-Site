@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -43,7 +44,20 @@ public class TaleResource {
 
 
         return ResponseEntity.ok().body(taleReadDTO);
+    }
 
+    @GetMapping("/my")
+    public ResponseEntity<List<TaleDTO>> findMyTales(@RequestHeader("Authorization") String token) {
+        List<TaleDTO> tales = taleService.findMyTales(token);
+
+        return ResponseEntity.ok().body(tales);
+    }
+
+    @GetMapping("/favorites")
+    public ResponseEntity<List<TaleDTO>> findMyFavorites(@RequestHeader("Authorization") String token) {
+        List<TaleDTO> tales = taleService.findMyFavorites(token);
+
+        return ResponseEntity.ok().body(tales);
     }
 
 }

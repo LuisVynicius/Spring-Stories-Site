@@ -34,15 +34,26 @@ public class JWTUtil {
         Claims claims = getClaims(token);
 
         if (Objects.nonNull(claims)) {
-            String username = claims.getSubject();
+            String email = claims.getSubject();
             Date expirationDate = claims.getExpiration();
             Date currentDate = new Date(System.currentTimeMillis());
 
-            if (Objects.nonNull(username) && Objects.nonNull(expirationDate) && currentDate.before(expirationDate)) {
+            if (Objects.nonNull(email) && Objects.nonNull(expirationDate) && currentDate.before(expirationDate)) {
                 return true;
             }
         }
         return false;
+    }
+
+    public String getEmailByToken(String token) {
+        Claims claims = getClaims(token);
+        
+        if (Objects.nonNull(claims)) {
+            String email = claims.getSubject();
+            return email;
+        }
+        
+        return null;
     }
 
     private SecretKey getSecretKeyBySecret() {

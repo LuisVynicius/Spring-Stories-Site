@@ -18,7 +18,6 @@ import com.mevy.metales_backend.repositories.ChapterRepository;
 import com.mevy.metales_backend.repositories.TaleRepository;
 import com.mevy.metales_backend.repositories.UserRepository;
 
-import io.jsonwebtoken.lang.Arrays;
 import lombok.AllArgsConstructor;
 
 @Configuration
@@ -116,7 +115,7 @@ public class Seed implements CommandLineRunner {
                     Uma mulher acorda sem passado, mas com códigos escondidos em seu DNA que podem mudar o destino da humanidade. 
                     Em um jogo de identidades fragmentadas e conspirações tecnológicas, até a verdade pode ser um programa malicioso.
                 """)
-        .creationDate(Instant.now())
+                .creationDate(Instant.now())
                 .UpdationDate(Instant.now())
                 .status(TaleStatus.FINALIZED.getCode())
                 .author(user3)
