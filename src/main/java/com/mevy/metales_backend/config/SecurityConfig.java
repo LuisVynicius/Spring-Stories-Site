@@ -21,11 +21,7 @@ import com.mevy.metales_backend.security.JWTUtil;
 public class SecurityConfig {
     
     private final String[] PUBLIC_MATCHES_POST = new String[] {
-        "/login",
-        "/user/register",
-        "/token/validate",
-        "/tales/my",
-        "/tales/favorites"
+        "/**"
     };
 
     private final String[] PUBLIC_MATCHES_GET = new String[] {

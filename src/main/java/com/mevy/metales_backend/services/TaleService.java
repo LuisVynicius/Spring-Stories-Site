@@ -1,7 +1,9 @@
 package com.mevy.metales_backend.services;
 
+import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.HashSet;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -11,6 +13,7 @@ import com.mevy.metales_backend.entities.Chapter;
 import com.mevy.metales_backend.entities.Tale;
 import com.mevy.metales_backend.entities.User;
 import com.mevy.metales_backend.entities.dtos.ChapterViewDTO;
+import com.mevy.metales_backend.entities.dtos.TaleCreateDTO;
 import com.mevy.metales_backend.entities.dtos.TaleDTO;
 import com.mevy.metales_backend.entities.dtos.TaleReadDTO;
 import com.mevy.metales_backend.entities.dtos.TaleViewDTO;
@@ -34,6 +37,18 @@ public class TaleService {
         List<TaleDTO> talesResult = tales.stream().map(x -> taleToTaleDTO(x)).toList();
 
         return talesResult;
+    }
+
+    public Tale create(TaleCreateDTO taleCreateDTO, String token) {
+        Tale tale = this.taleCreateDtoToTale(taleCreateDTO);
+
+        User user = this.userService.findUserByToken(token);
+
+        tale.setAuthor(user);
+
+        tale = taleRepository.save(tale);
+
+        return tale;
     }
 
     @Transactional(readOnly = true)
@@ -74,6 +89,19 @@ public class TaleService {
                     .stream()
                     .map(tale -> taleToTaleDTO(tale))
                     .toList();
+    }
+
+    private Tale taleCreateDtoToTale(TaleCreateDTO taleCreateDTO) {
+        Tale tale = Tale.builder()
+                        .name(taleCreateDTO.name())
+                        .description(taleCreateDTO.description())
+                        .categories(new HashSet<>())
+                        .creationDate(Instant.now())
+                        .UpdationDate(Instant.now())
+                        .status(2)
+                        .build();
+
+        return tale;
     }
 
     private TaleDTO taleToTaleDTO(Tale tale) {

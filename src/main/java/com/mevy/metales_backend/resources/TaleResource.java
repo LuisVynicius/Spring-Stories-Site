@@ -1,19 +1,27 @@
 package com.mevy.metales_backend.resources;
 
+import java.net.URI;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import com.mevy.metales_backend.entities.Tale;
+import com.mevy.metales_backend.entities.dtos.TaleCreateDTO;
 import com.mevy.metales_backend.entities.dtos.TaleDTO;
 import com.mevy.metales_backend.entities.dtos.TaleReadDTO;
 import com.mevy.metales_backend.entities.dtos.TaleViewDTO;
 import com.mevy.metales_backend.services.TaleService;
 
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 
 @RestController
@@ -58,6 +66,21 @@ public class TaleResource {
         List<TaleDTO> tales = taleService.findMyFavorites(token);
 
         return ResponseEntity.ok().body(tales);
+    }
+
+    @PostMapping
+    public ResponseEntity<Void> create(
+            @RequestBody @Valid TaleCreateDTO taleCreateDTO,
+            @RequestHeader("Authorization") String token
+        ) {
+        Tale tale = taleService.create(taleCreateDTO, token);
+
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
+                                            .path("/{id}")
+                                            .buildAndExpand(tale.getId())
+                                            .toUri();
+
+        return ResponseEntity.created(uri).build();
     }
 
 }
