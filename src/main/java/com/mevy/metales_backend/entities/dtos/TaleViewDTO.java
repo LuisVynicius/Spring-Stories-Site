@@ -11,7 +11,7 @@ public record TaleViewDTO(
     String status,
     String[] categories,
     String description,
-    ChapterDTO[] chapters
+    ChapterViewDTO[] chapters
 ) {
     
 }

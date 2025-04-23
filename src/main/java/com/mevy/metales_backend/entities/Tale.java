@@ -1,7 +1,9 @@
 package com.mevy.metales_backend.entities;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -9,7 +11,6 @@ import com.mevy.metales_backend.entities.enums.TaleStatus;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -91,7 +92,7 @@ public class Tale {
     private Set<User> usersFavorites = new HashSet<>();
 
     @OneToMany(mappedBy = "tale")
-    private Set<Chapter> chapters = new HashSet<>();
+    private List<Chapter> chapters = new ArrayList<>();
 
     public void setStatus(TaleStatus status) {
         this.status = status.getCode();

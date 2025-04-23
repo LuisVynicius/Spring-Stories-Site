@@ -26,6 +26,12 @@ public class SecurityConfig {
         "/token/validate"
     };
 
+    private final String[] PUBLIC_MATCHES_GET = new String[] {
+        "/tales/all",
+        "/tales/**",
+        "/tales/**/**"
+    };
+
     private AuthenticationManager authenticationManager;
 
     @Autowired
@@ -57,8 +63,7 @@ public class SecurityConfig {
                     )
                     .authorizeHttpRequests(request -> request
                         .requestMatchers(HttpMethod.POST, PUBLIC_MATCHES_POST).permitAll()
-                        .requestMatchers(HttpMethod.GET, "/tales/all").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/tales/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, PUBLIC_MATCHES_GET).permitAll()
                         .anyRequest().authenticated()
                     )
                     .authenticationManager(authenticationManager)

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.mevy.metales_backend.entities.dtos.TaleDTO;
+import com.mevy.metales_backend.entities.dtos.TaleReadDTO;
 import com.mevy.metales_backend.entities.dtos.TaleViewDTO;
 import com.mevy.metales_backend.services.TaleService;
 
@@ -33,6 +34,16 @@ public class TaleResource {
         TaleViewDTO taleViewDTO = taleService.findTale(name);
 
         return ResponseEntity.ok().body(taleViewDTO);
+    }
+
+    @GetMapping("/{name}/{number}")
+    public ResponseEntity<TaleReadDTO> findChapter(@PathVariable String name, @PathVariable Long number) {
+        TaleReadDTO taleReadDTO = taleService.findChapter(name, number);
+
+
+
+        return ResponseEntity.ok().body(taleReadDTO);
+
     }
 
 }

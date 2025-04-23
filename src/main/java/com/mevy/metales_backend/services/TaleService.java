@@ -7,9 +7,11 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.mevy.metales_backend.entities.Chapter;
 import com.mevy.metales_backend.entities.Tale;
-import com.mevy.metales_backend.entities.dtos.ChapterDTO;
+import com.mevy.metales_backend.entities.dtos.ChapterViewDTO;
 import com.mevy.metales_backend.entities.dtos.TaleDTO;
+import com.mevy.metales_backend.entities.dtos.TaleReadDTO;
 import com.mevy.metales_backend.entities.dtos.TaleViewDTO;
 import com.mevy.metales_backend.repositories.TaleRepository;
 import com.mevy.metales_backend.repositories.UserRepository;
@@ -27,6 +29,20 @@ public class TaleService {
     public List<TaleDTO> findTales() {
         List<Tale> tales = taleRepository.findAll();
 
+        tales.forEach(tale -> {
+            if (tale.getDescription().length() > 300) {
+                tale.setDescription(
+                    tale.getDescription().substring(0, 297) + "..."
+                );
+            }
+
+            if (tale.getName().length() > 26) {
+                tale.setName(
+                    tale.getName().substring(0, 23) + "..."
+                );
+            }
+        });
+
         List<TaleDTO> talesResult = tales.stream().map(x -> taleToTaleDTO(x)).toList();
 
         return talesResult;
@@ -42,19 +58,28 @@ public class TaleService {
         return taleViewDTO;
     }
 
+    @Transactional(readOnly = true)
+    public TaleReadDTO findChapter(String name, Long number) {
+        // TODO Erro
+        Tale tale = taleRepository.findByName(name).get();
+
+        TaleReadDTO taleReadDTO = taleToTaleReadDTO(tale, number);
+
+        return taleReadDTO;
+    }
+
     private TaleDTO taleToTaleDTO(Tale tale) {
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
                                                                 .withZone(
-                                                                    ZoneId.of("America/Sao_Paulo")
-                                                                );
+                                                                    ZoneId.of("America/Sao_Paulo"
+                                                                )
+        );
 
         return new TaleDTO(
             tale.getName(),
             tale.getAuthor().getUsername(),
             tale.getChapters().size(),
-            dateTimeFormatter.format(tale.getCreationDate()),
             dateTimeFormatter.format(tale.getUpdationDate()),
-            tale.getStatus().getDescription(),
             tale.getUsersLikes().size(),
             tale.getCategories().stream().map(
                 category -> category.getName()
@@ -66,8 +91,9 @@ public class TaleService {
     private TaleViewDTO taleToTaleViewDTO(Tale tale) {
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
                                                                 .withZone(
-                                                                    ZoneId.of("America/Sao_Paulo")
-                                                                );
+                                                                    ZoneId.of("America/Sao_Paulo"
+                                                                )
+        );
 
         TaleViewDTO taleViewDTO = new TaleViewDTO(
             tale.getName(),
@@ -80,12 +106,34 @@ public class TaleService {
             tale.getStatus().getDescription(),
             tale.getCategories().stream().map(category -> category.getName()).toArray(String[]::new),
             tale.getDescription(),
-            tale.getChapters().stream().map(
-                chapter -> new ChapterDTO(chapter.getName(), dateTimeFormatter.format(chapter.getCreationDate()))
-            ).toArray(ChapterDTO[]::new)
+            tale.getChapters()
+                .stream()
+                .sorted((x, y) -> x.getCreationDate().compareTo(y.getCreationDate()))
+                .map(
+                    chapter -> new ChapterViewDTO(chapter.getName(), dateTimeFormatter.format(chapter.getCreationDate()))
+                )
+                .toArray(ChapterViewDTO[]::new)
         );
 
         return taleViewDTO;
+    }
+
+    private TaleReadDTO taleToTaleReadDTO(Tale tale, Long number) {
+
+        Chapter chapter = tale.getChapters()
+                                .stream()
+                                .sorted((x, y) -> x.getCreationDate().compareTo(y.getCreationDate()))
+                                .toList()
+                                .get(number.intValue() - 1);
+
+        TaleReadDTO taleReadDTO = new TaleReadDTO(
+            tale.getName(),
+            tale.getAuthor().getUsername(),
+            chapter.getName(),
+            chapter.getContent()
+        );
+
+        return taleReadDTO;
     }
 
 }

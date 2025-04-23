@@ -1,8 +1,8 @@
 package com.mevy.metales_backend.entities.dtos;
 
-public record ChapterDTO(
+public record ChapterReadDTO(
     String name,
-    String date
+    String content
 ) {
-
+    
 }
