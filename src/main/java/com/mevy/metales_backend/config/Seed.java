@@ -82,7 +82,7 @@ public class Seed implements CommandLineRunner {
                     para restaurar um mundo dilacerado por traições, guerras e esperanças perdidas.
                 """)
                 .creationDate(Instant.now())
-                .UpdationDate(Instant.now())
+                .updationDate(Instant.now())
                 .status(TaleStatus.ONGOING.getCode())
                 .author(user1)
                 .categories(Set.of(catFantasy, catAdventure, catAction))
@@ -99,7 +99,7 @@ public class Seed implements CommandLineRunner {
                     com dentes de gelo e olhos cheios de rancor. Quem sobreviverá à Última Geada?
                 """)
                 .creationDate(Instant.now())
-                .UpdationDate(Instant.now())
+                .updationDate(Instant.now())
                 .status(TaleStatus.HIATUS.getCode())
                 .author(user2)
                 .categories(Set.of(catFantasy, catDrama))
@@ -116,7 +116,7 @@ public class Seed implements CommandLineRunner {
                     Em um jogo de identidades fragmentadas e conspirações tecnológicas, até a verdade pode ser um programa malicioso.
                 """)
                 .creationDate(Instant.now())
-                .UpdationDate(Instant.now())
+                .updationDate(Instant.now())
                 .status(TaleStatus.FINALIZED.getCode())
                 .author(user3)
                 .categories(Set.of(catScifi, catMystery))
@@ -133,7 +133,7 @@ public class Seed implements CommandLineRunner {
                     que ecoa entre galáxias. O amor pode sobreviver ao vazio do espaço... mas será suficiente para unir dois mundos?
                 """)
                 .creationDate(Instant.now()).creationDate(Instant.now())
-                .UpdationDate(Instant.now())
+                .updationDate(Instant.now())
                 .status(TaleStatus.ONGOING.getCode())
                 .author(user3)
                 .categories(Set.of(catRomance, catScifi))

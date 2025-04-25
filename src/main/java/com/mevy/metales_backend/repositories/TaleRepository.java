@@ -13,4 +13,7 @@ public interface TaleRepository extends JpaRepository<Tale, Long> {
     
     @Transactional(readOnly = true)
     Optional<Tale> findByName(String name);
+
+    @Transactional(readOnly = true)
+    boolean existsByName(String name);
 }

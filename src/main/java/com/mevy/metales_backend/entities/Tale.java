@@ -70,7 +70,7 @@ public class Tale {
         timezone = "UTC",
         shape = JsonFormat.Shape.STRING
     )
-    private Instant UpdationDate;
+    private Instant updationDate;
 
     @Column(
         length = 500

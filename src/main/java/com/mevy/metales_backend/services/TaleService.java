@@ -18,6 +18,9 @@ import com.mevy.metales_backend.entities.dtos.TaleDTO;
 import com.mevy.metales_backend.entities.dtos.TaleDeleteDTO;
 import com.mevy.metales_backend.entities.dtos.TaleReadDTO;
 import com.mevy.metales_backend.entities.dtos.TaleViewDTO;
+import com.mevy.metales_backend.exceptions.errors.DatabaseIntegrityException;
+import com.mevy.metales_backend.exceptions.errors.ResourceNotFoundException;
+import com.mevy.metales_backend.exceptions.errors.ValidationException;
 import com.mevy.metales_backend.repositories.TaleRepository;
 import com.mevy.metales_backend.repositories.UserRepository;
 
@@ -33,7 +36,7 @@ public class TaleService {
 
     @Transactional(readOnly = true)
     public List<TaleDTO> findTales() {
-        List<Tale> tales = taleRepository.findAll();
+        List<Tale> tales = this.taleRepository.findAll();
 
         List<TaleDTO> talesResult = tales.stream().map(x -> taleToTaleDTO(x)).toList();
 
@@ -42,52 +45,54 @@ public class TaleService {
 
     public Tale create(TaleCreateDTO taleCreateDTO, String token) {
         Tale tale = this.taleCreateDtoToTale(taleCreateDTO);
+        
+        if (this.taleRepository.existsByName(tale.getName())) {
+            throw new DatabaseIntegrityException("Uma história com esse nome já existe.");
+        }
 
         User user = this.userService.findUserByToken(token);
 
         tale.setAuthor(user);
 
-        tale = taleRepository.save(tale);
+        this.taleRepository.save(tale);
 
         return tale;
     }
 
     public void delete(TaleDeleteDTO taleDeleteDTO, String token) {
-        Tale tale = this.taleRepository.findByName(taleDeleteDTO.name()).get();
+        Tale tale = this.findByName(taleDeleteDTO.name());
         
         User user = this.userService.findUserByToken(token);
 
-        if (tale.getAuthor() == user) {
-            System.out.println("É igual, realmentes");
+        if (tale.getAuthor() != user) {
+            throw new ValidationException("História não pertence ao usuário desejado");
         }
 
-        taleRepository.delete(tale);
+        this.taleRepository.delete(tale);
 
     }
 
     @Transactional(readOnly = true)
     public TaleViewDTO findTale(String name) {
-        // TODO Erro
-        Tale tale = taleRepository.findByName(name).get();
+        Tale tale = this.findByName(name);
 
-        TaleViewDTO taleViewDTO = taleToTaleViewDTO(tale);
+        TaleViewDTO taleViewDTO = this.taleToTaleViewDTO(tale);
 
         return taleViewDTO;
     }
 
     @Transactional(readOnly = true)
     public TaleReadDTO findChapter(String name, Long number) {
-        // TODO Erro
-        Tale tale = taleRepository.findByName(name).get();
+        Tale tale = this.findByName(name);
 
-        TaleReadDTO taleReadDTO = taleToTaleReadDTO(tale, number);
+        TaleReadDTO taleReadDTO = this.taleToTaleReadDTO(tale, number);
 
         return taleReadDTO;
     }
 
     @Transactional(readOnly = true)
     public List<TaleDTO> findMyTales(String token) {
-        User user = userService.findUserByToken(token);
+        User user = this.userService.findUserByToken(token);
 
         return user.getTales()
                     .stream()
@@ -97,12 +102,20 @@ public class TaleService {
 
     @Transactional(readOnly = true)
     public List<TaleDTO> findMyFavorites(String token) {
-        User user = userService.findUserByToken(token);
+        User user = this.userService.findUserByToken(token);
 
         return user.getFavorites()
                     .stream()
                     .map(tale -> taleToTaleDTO(tale))
                     .toList();
+    }
+
+    private Tale findByName(String name) {
+        Tale tale = this.taleRepository.findByName(name).orElseThrow(
+            () -> new ResourceNotFoundException("História não encontrada")
+        );
+
+        return tale;
     }
 
     private Tale taleCreateDtoToTale(TaleCreateDTO taleCreateDTO) {
@@ -111,7 +124,7 @@ public class TaleService {
                         .description(taleCreateDTO.description())
                         .categories(new HashSet<>())
                         .creationDate(Instant.now())
-                        .UpdationDate(Instant.now())
+                        .updationDate(Instant.now())
                         .status(2)
                         .build();
 
@@ -119,17 +132,12 @@ public class TaleService {
     }
 
     private TaleDTO taleToTaleDTO(Tale tale) {
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
-                                                                .withZone(
-                                                                    ZoneId.of("America/Sao_Paulo"
-                                                                )
-        );
 
         return new TaleDTO(
             tale.getName().length() > 26 ? tale.getName().substring(0, 23) + "..." : tale.getName(),
             tale.getAuthor().getUsername(),
             tale.getChapters().size(),
-            dateTimeFormatter.format(tale.getUpdationDate()),
+            this.formatDate(tale.getUpdationDate()),
             tale.getUsersLikes().size(),
             tale.getCategories().stream().map(
                 category -> category.getName()
@@ -139,11 +147,6 @@ public class TaleService {
     }
 
     private TaleViewDTO taleToTaleViewDTO(Tale tale) {
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
-                                                                .withZone(
-                                                                    ZoneId.of("America/Sao_Paulo"
-                                                                )
-        );
 
         TaleViewDTO taleViewDTO = new TaleViewDTO(
             tale.getName(),
@@ -151,8 +154,8 @@ public class TaleService {
             tale.getChapters().size(),
             tale.getUsersLikes().size(),
             tale.getUsersFavorites().size(),
-            dateTimeFormatter.format(tale.getCreationDate()),
-            dateTimeFormatter.format(tale.getUpdationDate()),
+            this.formatDate(tale.getCreationDate()),
+            this.formatDate(tale.getUpdationDate()),
             tale.getStatus().getDescription(),
             tale.getCategories().stream().map(category -> category.getName()).toArray(String[]::new),
             tale.getDescription(),
@@ -160,7 +163,7 @@ public class TaleService {
                 .stream()
                 .sorted((x, y) -> x.getCreationDate().compareTo(y.getCreationDate()))
                 .map(
-                    chapter -> new ChapterViewDTO(chapter.getName(), dateTimeFormatter.format(chapter.getCreationDate()))
+                    chapter -> new ChapterViewDTO(chapter.getName(), this.formatDate(chapter.getCreationDate()))
                 )
                 .toArray(ChapterViewDTO[]::new)
         );
@@ -184,6 +187,18 @@ public class TaleService {
         );
 
         return taleReadDTO;
+    }
+
+    private String formatDate(Instant date) {
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+                                                                .withZone(
+                                                                    ZoneId.of("America/Sao_Paulo"
+                                                                )
+        );
+
+        String formatedString = dateTimeFormatter.format(date);
+
+        return formatedString;
     }
 
 }

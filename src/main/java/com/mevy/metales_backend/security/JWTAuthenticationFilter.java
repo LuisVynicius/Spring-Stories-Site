@@ -1,5 +1,7 @@
 package com.mevy.metales_backend.security;
 
+import java.io.IOException;
+
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -7,6 +9,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mevy.metales_backend.entities.User;
+import com.mevy.metales_backend.exceptions.GlobalExceptionHandler;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
@@ -21,7 +24,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         AuthenticationManager authenticationManager,
         JWTUtil jwtUtil
     ) {
-        // TODO setAuthenticationFailureHandler();
+        setAuthenticationFailureHandler(new GlobalExceptionHandler());
         this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;
     }
@@ -42,9 +45,8 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             Authentication authentication = this.authenticationManager.authenticate(authtoken);
 
             return authentication;
-        } catch (Exception e) {
-            // TODO Exceptions
-            throw new RuntimeException("");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
