@@ -6,6 +6,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.mevy.metales_backend.entities.enums.TaleStatus;
 
@@ -92,6 +95,7 @@ public class Tale {
     private Set<User> usersFavorites = new HashSet<>();
 
     @OneToMany(mappedBy = "tale")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private List<Chapter> chapters = new ArrayList<>();
 
     public void setStatus(TaleStatus status) {

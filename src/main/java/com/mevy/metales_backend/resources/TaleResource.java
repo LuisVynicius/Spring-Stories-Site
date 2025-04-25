@@ -4,6 +4,7 @@ import java.net.URI;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,11 +13,11 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import com.mevy.metales_backend.entities.Tale;
 import com.mevy.metales_backend.entities.dtos.TaleCreateDTO;
 import com.mevy.metales_backend.entities.dtos.TaleDTO;
+import com.mevy.metales_backend.entities.dtos.TaleDeleteDTO;
 import com.mevy.metales_backend.entities.dtos.TaleReadDTO;
 import com.mevy.metales_backend.entities.dtos.TaleViewDTO;
 import com.mevy.metales_backend.services.TaleService;
@@ -81,6 +82,16 @@ public class TaleResource {
                                             .toUri();
 
         return ResponseEntity.created(uri).build();
+    }
+
+    @DeleteMapping
+    public ResponseEntity<Void> delete(
+        @RequestBody @Valid TaleDeleteDTO taleDeleteDTO,
+        @RequestHeader("Authorization") String token
+    ) {
+        taleService.delete(taleDeleteDTO, token);
+
+        return ResponseEntity.noContent().build();
     }
 
 }

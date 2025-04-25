@@ -15,6 +15,7 @@ import com.mevy.metales_backend.entities.User;
 import com.mevy.metales_backend.entities.dtos.ChapterViewDTO;
 import com.mevy.metales_backend.entities.dtos.TaleCreateDTO;
 import com.mevy.metales_backend.entities.dtos.TaleDTO;
+import com.mevy.metales_backend.entities.dtos.TaleDeleteDTO;
 import com.mevy.metales_backend.entities.dtos.TaleReadDTO;
 import com.mevy.metales_backend.entities.dtos.TaleViewDTO;
 import com.mevy.metales_backend.repositories.TaleRepository;
@@ -49,6 +50,19 @@ public class TaleService {
         tale = taleRepository.save(tale);
 
         return tale;
+    }
+
+    public void delete(TaleDeleteDTO taleDeleteDTO, String token) {
+        Tale tale = this.taleRepository.findByName(taleDeleteDTO.name()).get();
+        
+        User user = this.userService.findUserByToken(token);
+
+        if (tale.getAuthor() == user) {
+            System.out.println("É igual, realmentes");
+        }
+
+        taleRepository.delete(tale);
+
     }
 
     @Transactional(readOnly = true)

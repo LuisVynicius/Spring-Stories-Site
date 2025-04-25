@@ -60,6 +60,7 @@ public class SecurityConfig {
                     .authorizeHttpRequests(request -> request
                         .requestMatchers(HttpMethod.POST, PUBLIC_MATCHES_POST).permitAll()
                         .requestMatchers(HttpMethod.GET, PUBLIC_MATCHES_GET).permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/**").permitAll()
                         .anyRequest().authenticated()
                     )
                     .authenticationManager(authenticationManager)
