@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.mevy.metales_backend.entities.Tale;
-import com.mevy.metales_backend.entities.dtos.TaleUpsertDTO;
+import com.mevy.metales_backend.entities.dtos.TaleUpdateAllDTO;
 import com.mevy.metales_backend.entities.dtos.TaleDTO;
 import com.mevy.metales_backend.entities.dtos.TaleDeleteDTO;
 import com.mevy.metales_backend.entities.dtos.TaleReadDTO;
@@ -62,8 +62,8 @@ public class TaleResource {
     }
 
     @GetMapping("upset/{name}")
-    public ResponseEntity<TaleUpsertDTO> findTaleToUpdate(@PathVariable String name) {
-        TaleUpsertDTO taleUpsertDTO = this.taleService.findTaleToUpdate(name);
+    public ResponseEntity<TaleUpdateAllDTO> findTaleToUpdate(@PathVariable String name) {
+        TaleUpdateAllDTO taleUpsertDTO = this.taleService.findTaleToUpdate(name);
 
         return ResponseEntity.ok().body(taleUpsertDTO);
     }
@@ -84,7 +84,7 @@ public class TaleResource {
 
     @PostMapping
     public ResponseEntity<Void> create(
-            @RequestBody @Valid TaleUpsertDTO taleUpsertDTO,
+            @RequestBody @Valid TaleUpdateAllDTO taleUpsertDTO,
             @RequestHeader("Authorization") String token
         ) {
         Tale tale = this.taleService.create(taleUpsertDTO, token);
@@ -97,13 +97,12 @@ public class TaleResource {
         return ResponseEntity.created(uri).build();
     }
 
-    @PutMapping("/{oldName}")
+    @PutMapping
     public ResponseEntity<Void> update(
-        @PathVariable String oldName,
         @RequestHeader("Authorization") String token,
-        @RequestBody TaleUpsertDTO taleUpsertDTO
+        @RequestBody TaleUpdateAllDTO taleUpdateAllDTO
     ) {
-        this.taleService.update(taleUpsertDTO, token, oldName);
+        this.taleService.update(taleUpdateAllDTO, token);
 
         return ResponseEntity.ok().build();
     }
