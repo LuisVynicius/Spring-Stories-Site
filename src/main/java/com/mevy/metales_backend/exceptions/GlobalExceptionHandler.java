@@ -22,14 +22,14 @@ import jakarta.servlet.http.HttpServletResponse;
 @RestControllerAdvice
 public class GlobalExceptionHandler implements AuthenticationFailureHandler {
     
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> uncaghtExceptionHandler(
-        Exception exception
-    ) {
-        ErrorResponse errorResponse = createErrorResponse("Um erro inesperado ocorreu");
+    // @ExceptionHandler(Exception.class)
+    // public ResponseEntity<ErrorResponse> uncaghtExceptionHandler(
+    //     Exception exception
+    // ) {
+    //     ErrorResponse errorResponse = createErrorResponse("Um erro inesperado ocorreu");
 
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
-    }
+    //     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+    // }
 
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ErrorResponse> resourceNotFoundExceptionHandler(

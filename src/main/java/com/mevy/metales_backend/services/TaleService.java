@@ -54,12 +54,28 @@ public class TaleService {
     }
 
     @Transactional(readOnly = true)
-    public TaleUpdateAllDTO findTaleToUpdate(String name) {
+    public TaleUpdateAllDTO findTaleToUpdate(String name, String token) {
         Tale tale = findByName(name);
+
+        this.validAuthor(tale.getAuthor(), token);
         
         TaleUpdateAllDTO taleUpsertDTO = this.taleToTaleUpsertDTO(tale);
 
         return taleUpsertDTO;
+    }
+
+    @Transactional(readOnly = true)
+    public Tale findById(Long id) {
+        Tale tale = this.taleRepository.findById(id).orElseThrow(
+            () -> new ResourceNotFoundException("História não encontrado")
+        );
+
+        return tale;
+    }
+
+    @Transactional(readOnly = true)
+    public boolean existsById(Long id) {
+        return this.taleRepository.existsById(id);
     }
 
     public Tale create(TaleUpdateAllDTO taleCreateDTO, String token) {
@@ -258,15 +274,6 @@ public class TaleService {
         if (author != user) {
             throw new ValidationException("História não pertence ao usuário desejado");
         }
-    }
-
-    @Transactional(readOnly = true)
-    private Tale findById(Long id) {
-        Tale tale = this.taleRepository.findById(id).orElseThrow(
-            () -> new ResourceNotFoundException("História não encontrado")
-        );
-
-        return tale;
     }
 
 }

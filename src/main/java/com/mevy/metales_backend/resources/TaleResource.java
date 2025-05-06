@@ -62,8 +62,8 @@ public class TaleResource {
     }
 
     @GetMapping("upset/{name}")
-    public ResponseEntity<TaleUpdateAllDTO> findTaleToUpdate(@PathVariable String name) {
-        TaleUpdateAllDTO taleUpsertDTO = this.taleService.findTaleToUpdate(name);
+    public ResponseEntity<TaleUpdateAllDTO> findTaleToUpdate(@PathVariable String name, @RequestHeader("Authorization") String token) {
+        TaleUpdateAllDTO taleUpsertDTO = this.taleService.findTaleToUpdate(name, token);
 
         return ResponseEntity.ok().body(taleUpsertDTO);
     }
