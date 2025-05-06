@@ -5,18 +5,20 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.mevy.metales_backend.entities.Category;
 import com.mevy.metales_backend.entities.Chapter;
 import com.mevy.metales_backend.entities.Tale;
 import com.mevy.metales_backend.entities.User;
 import com.mevy.metales_backend.entities.dtos.ChapterViewDTO;
-import com.mevy.metales_backend.entities.dtos.TaleCreateDTO;
 import com.mevy.metales_backend.entities.dtos.TaleDTO;
 import com.mevy.metales_backend.entities.dtos.TaleDeleteDTO;
 import com.mevy.metales_backend.entities.dtos.TaleReadDTO;
+import com.mevy.metales_backend.entities.dtos.TaleUpsertDTO;
 import com.mevy.metales_backend.entities.dtos.TaleViewDTO;
 import com.mevy.metales_backend.exceptions.errors.DatabaseIntegrityException;
 import com.mevy.metales_backend.exceptions.errors.ResourceNotFoundException;
@@ -46,12 +48,23 @@ public class TaleService {
         User user = this.userService.findByUsername(username);
         List<Tale> tales = user.getTales().stream().toList();
 
-        List<TaleDTO> talesResult = tales.stream().map(x -> taleToTaleDTO(x)).toList();
+        List<TaleDTO> talesResult = tales.stream()
+                                        .map(x -> taleToTaleDTO(x))
+                                        .toList();
 
         return talesResult;
     }
 
-    public Tale create(TaleCreateDTO taleCreateDTO, String token) {
+    @Transactional(readOnly = true)
+    public TaleUpsertDTO findTaleToUpdate(String name) {
+        Tale tale = findByName(name);
+        
+        TaleUpsertDTO taleUpsertDTO = this.taleToTaleUpsertDTO(tale);
+
+        return taleUpsertDTO;
+    }
+
+    public Tale create(TaleUpsertDTO taleCreateDTO, String token) {
         Tale tale = this.taleCreateDtoToTale(taleCreateDTO);
         
         if (this.taleRepository.existsByName(tale.getName())) {
@@ -67,14 +80,24 @@ public class TaleService {
         return tale;
     }
 
+    public void update(TaleUpsertDTO taleUpsertDTO, String token, String oldName) {
+        Tale tale = this.findByName(oldName);
+
+        this.validAuthor(tale.getAuthor(), token);
+
+        tale.setName(taleUpsertDTO.name());
+        tale.setDescription(taleUpsertDTO.description());
+        tale.setUpdationDate(Instant.now());
+        //TODO Categories
+        tale.setCategories(tale.getCategories());
+
+        this.taleRepository.save(tale);
+    }
+
     public void delete(TaleDeleteDTO taleDeleteDTO, String token) {
         Tale tale = this.findByName(taleDeleteDTO.name());
         
-        User user = this.userService.findUserByToken(token);
-
-        if (tale.getAuthor() != user) {
-            throw new ValidationException("História não pertence ao usuário desejado");
-        }
+        this.validAuthor(tale.getAuthor(), token);
 
         this.taleRepository.delete(tale);
 
@@ -126,7 +149,7 @@ public class TaleService {
         return tale;
     }
 
-    private Tale taleCreateDtoToTale(TaleCreateDTO taleCreateDTO) {
+    private Tale taleCreateDtoToTale(TaleUpsertDTO taleCreateDTO) {
         Tale tale = Tale.builder()
                         .name(taleCreateDTO.name())
                         .description(taleCreateDTO.description())
@@ -141,7 +164,7 @@ public class TaleService {
 
     private TaleDTO taleToTaleDTO(Tale tale) {
 
-        return new TaleDTO(
+        TaleDTO taleDTO = new TaleDTO(
             tale.getName().length() > 26 ? tale.getName().substring(0, 23) + "..." : tale.getName(),
             tale.getAuthor().getUsername(),
             tale.getChapters().size(),
@@ -152,6 +175,21 @@ public class TaleService {
             ).toArray(String[]::new),
             tale.getDescription().length() > 300 ? tale.getDescription().substring(0, 297) + "..." : tale.getDescription()
         );
+
+        return taleDTO;
+    }
+
+    private TaleUpsertDTO taleToTaleUpsertDTO(Tale tale) {
+        TaleUpsertDTO taleUpsertDTO = new TaleUpsertDTO(
+            tale.getName(),
+            tale.getDescription(),
+            tale.getCategories()
+                .stream()
+                .map(category -> category.getName())
+                .toArray(String[]::new)
+        );
+
+        return taleUpsertDTO;
     }
 
     private TaleViewDTO taleToTaleViewDTO(Tale tale) {
@@ -207,6 +245,14 @@ public class TaleService {
         String formatedString = dateTimeFormatter.format(date);
 
         return formatedString;
+    }
+
+    private void validAuthor(User author, String token) {
+        User user = this.userService.findUserByToken(token);
+
+        if (author != user) {
+            throw new ValidationException("História não pertence ao usuário desejado");
+        }
     }
 
 }

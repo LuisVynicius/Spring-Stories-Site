@@ -29,7 +29,6 @@ public class GlobalExceptionHandler implements AuthenticationFailureHandler {
         ErrorResponse errorResponse = createErrorResponse("Um erro inesperado ocorreu");
 
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
-
     }
 
     @ExceptionHandler(ResourceNotFoundException.class)

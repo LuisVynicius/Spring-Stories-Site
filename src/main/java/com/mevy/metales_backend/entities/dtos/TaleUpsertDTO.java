@@ -3,7 +3,7 @@ package com.mevy.metales_backend.entities.dtos;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
-public record TaleCreateDTO(
+public record TaleUpsertDTO(
 
     @NotBlank(message = "The name field can't be null and must have at least 1 character.")
     @Size(

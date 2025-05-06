@@ -61,8 +61,10 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, PUBLIC_MATCHES_POST).permitAll()
                         .requestMatchers(HttpMethod.GET, PUBLIC_MATCHES_GET).permitAll()
                         .requestMatchers(HttpMethod.DELETE, "/**").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/**").permitAll()
                         .anyRequest().authenticated()
                     )
+                    // TODO AuthorizationFilter
                     .authenticationManager(authenticationManager)
                     .addFilter(new JWTAuthenticationFilter(authenticationManager, jwtUtil))
                     .build();
