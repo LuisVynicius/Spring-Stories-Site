@@ -22,7 +22,6 @@ import com.mevy.metales_backend.exceptions.errors.DatabaseIntegrityException;
 import com.mevy.metales_backend.exceptions.errors.ResourceNotFoundException;
 import com.mevy.metales_backend.exceptions.errors.ValidationException;
 import com.mevy.metales_backend.repositories.TaleRepository;
-import com.mevy.metales_backend.repositories.UserRepository;
 
 import lombok.AllArgsConstructor;
 
@@ -31,12 +30,21 @@ import lombok.AllArgsConstructor;
 public class TaleService {
     
     private final TaleRepository taleRepository;
-    private final UserRepository userRepository;
     private final UserService userService;
 
     @Transactional(readOnly = true)
     public List<TaleDTO> findTales() {
         List<Tale> tales = this.taleRepository.findAll();
+
+        List<TaleDTO> talesResult = tales.stream().map(x -> taleToTaleDTO(x)).toList();
+
+        return talesResult;
+    }
+
+    @Transactional(readOnly = true)
+    public List<TaleDTO> findTalesByUsername(String username) {
+        User user = this.userService.findByUsername(username);
+        List<Tale> tales = user.getTales().stream().toList();
 
         List<TaleDTO> talesResult = tales.stream().map(x -> taleToTaleDTO(x)).toList();
 

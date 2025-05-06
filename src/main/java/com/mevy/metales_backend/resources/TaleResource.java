@@ -39,6 +39,13 @@ public class TaleResource {
         return ResponseEntity.ok().body(tales);
     }
 
+    @GetMapping("/all/username/{username}")
+    public ResponseEntity<List<TaleDTO>> findTalesByUsername(@PathVariable String username) {
+        List<TaleDTO> tales = taleService.findTalesByUsername(username);
+
+        return ResponseEntity.ok().body(tales);
+    }
+
     @GetMapping("/{name}")
     public ResponseEntity<TaleViewDTO> findTale(@PathVariable String name) {
         TaleViewDTO taleViewDTO = taleService.findTale(name);
@@ -49,8 +56,6 @@ public class TaleResource {
     @GetMapping("/{name}/{number}")
     public ResponseEntity<TaleReadDTO> findChapter(@PathVariable String name, @PathVariable Long number) {
         TaleReadDTO taleReadDTO = taleService.findChapter(name, number);
-
-
 
         return ResponseEntity.ok().body(taleReadDTO);
     }
